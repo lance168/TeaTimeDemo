@@ -7,3 +7,5 @@ TeaTimeDemo/obj/Debug/net8.0/TeaTimeDemo.csproj.AssemblyReference.cache
 TeaTimeDemo/obj/Debug/net8.0/TeaTimeDemo.GeneratedMSBuildEditorConfig.editorconfig
 TeaTimeDemo/obj/Debug/net8.0/TeaTimeDemo.RazorAssemblyInfo.cache
 TeaTimeDemo/obj/Debug/net8.0/TeaTimeDemo.RazorAssemblyInfo.cs
+TeaTimeDemo/bin/
+TeaTimeDemo/obj/
