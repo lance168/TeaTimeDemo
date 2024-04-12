@@ -10,3 +10,7 @@ TeaTimeDemo/obj/Debug/net8.0/TeaTimeDemo.RazorAssemblyInfo.cs
 TeaTimeDemo/bin/
 TeaTimeDemo/obj/
 .vs/TeaTimeDemo/DesignTimeBuild/.dtbcache.v2
+.vs/
+TeaTimeDemo.DataAcess/obj/
+TeaTimeDemo.Models/obj/
+TeaTimeDemo.Utility/obj/

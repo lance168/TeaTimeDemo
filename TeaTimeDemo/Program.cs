@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using TeaTimeDemo.Data;
+using TeaTimeDemo.DataAcess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
