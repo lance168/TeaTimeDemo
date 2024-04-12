@@ -1,19 +1,20 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TeaTimeDemo.DataAcess.Data;
+using TeaTimeDemo.DataAcess.Repository.IRepository;
 using TeaTimeDemo.Models;
 
 namespace TeaTimeDemo.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ApplicationDbContext _db;
-        public CategoryController(ApplicationDbContext db)
+        private readonly ICategoryRepository _categoryRepo;
+        public CategoryController(ICategoryRepository db)
         {
-            _db = db;
+            _categoryRepo = db;
         }
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _db.Categories.ToList();
+            List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
 
             return View(objCategoryList);
         }
@@ -32,8 +33,8 @@ namespace TeaTimeDemo.Controllers
             }
             if (ModelState.IsValid)
             {
-                _db.Categories.Add(obj);
-                _db.SaveChanges();
+                _categoryRepo.Add(obj);
+                _categoryRepo.Save();
                 TempData["Success"] = "類別新增成功!";
                 return RedirectToAction("Index");
             }
@@ -46,7 +47,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _db.Categories.Find(id);
+            Category? categortFromDb = _categoryRepo.Get(u=>u.Id==id);
 
             if (categortFromDb == null)
             {
@@ -61,8 +62,8 @@ namespace TeaTimeDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                _db.Categories.Update(obj);
-                _db.SaveChanges();
+                _categoryRepo.Update(obj);
+                _categoryRepo.Save();
                 return RedirectToAction("Index");
             }
             return View();
@@ -74,7 +75,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _db.Categories.Find(id);
+            Category? categortFromDb = _categoryRepo.Get(u=>u.Id==id);
 
             if (categortFromDb == null)
             {
@@ -90,13 +91,13 @@ namespace TeaTimeDemo.Controllers
         {
             //TODO: Confirm: 不知道為什麼物能直接傳物件進來，但是Edit就可以???
             //直接傳obj.Name、obj.DisplayOrder的資料會是空的
-            Category? obj = _db.Categories.Find(id);
+            Category? obj = _categoryRepo.Get(u=>u.Id==id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _db.Categories.Remove(obj);
-            _db.SaveChanges();
+            _categoryRepo.Remove(obj);
+            _categoryRepo.Save();
             return RedirectToAction("Index");
         }
     }
