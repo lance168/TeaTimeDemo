@@ -14,3 +14,6 @@ TeaTimeDemo/obj/
 TeaTimeDemo.DataAcess/obj/
 TeaTimeDemo.Models/obj/
 TeaTimeDemo.Utility/obj/
+TeaTimeDemo.DataAcess/bin/
+TeaTimeDemo.Models/bin/
+TeaTimeDemo.Utility/bin/
