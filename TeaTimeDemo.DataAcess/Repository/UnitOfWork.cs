@@ -5,26 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using TeaTimeDemo.DataAcess.Data;
 using TeaTimeDemo.DataAcess.Repository.IRepository;
-using TeaTimeDemo.Models;
 
 namespace TeaTimeDemo.DataAcess.Repository
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class UnitOfWork : IUnitOfWork
     {
         private ApplicationDbContext _db;
-        public CategoryRepository(ApplicationDbContext db) : base(db)
+
+        public ICategoryRepository Category { get; private set; }
+
+
+        public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
+            Category = new CategoryRepository(_db);
         }
 
-        //public void Save()
-        //{
-        //   _db.SaveChanges();
-        //}
-
-        public void Update(Category obj)
+        public void Save()
         {
-           _db.Categories.Update(obj);
+            _db.SaveChanges();
         }
     }
 }

@@ -7,14 +7,23 @@ namespace TeaTimeDemo.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ICategoryRepository _categoryRepo;
-        public CategoryController(ICategoryRepository db)
+        //private readonly ICategoryRepository _categoryRepo;
+        //public CategoryController(ICategoryRepository db)
+        //{
+        //    _categoryRepo = db;
+        //}
+
+        private readonly IUnitOfWork _unitOfWork;
+
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepo = db;
+            _unitOfWork = unitOfWork;
         }
+
         public IActionResult Index()
         {
-            List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
+            //List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
+            List<Category> objCategoryList=_unitOfWork.Category.GetAll().ToList();
 
             return View(objCategoryList);
         }
@@ -33,8 +42,8 @@ namespace TeaTimeDemo.Controllers
             }
             if (ModelState.IsValid)
             {
-                _categoryRepo.Add(obj);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Add(obj);
+                _unitOfWork.Save();
                 TempData["Success"] = "類別新增成功!";
                 return RedirectToAction("Index");
             }
@@ -47,7 +56,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _categoryRepo.Get(u=>u.Id==id);
+            Category? categortFromDb = _unitOfWork.Category.Get(u=>u.Id==id);
 
             if (categortFromDb == null)
             {
@@ -62,8 +71,8 @@ namespace TeaTimeDemo.Controllers
         {
             if (ModelState.IsValid)
             {
-                _categoryRepo.Update(obj);
-                _categoryRepo.Save();
+                _unitOfWork.Category.Update(obj);
+                _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
             return View();
@@ -75,7 +84,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _categoryRepo.Get(u=>u.Id==id);
+            Category? categortFromDb = _unitOfWork.Category.Get(u=>u.Id==id);
 
             if (categortFromDb == null)
             {
@@ -91,13 +100,13 @@ namespace TeaTimeDemo.Controllers
         {
             //TODO: Confirm: 不知道為什麼物能直接傳物件進來，但是Edit就可以???
             //直接傳obj.Name、obj.DisplayOrder的資料會是空的
-            Category? obj = _categoryRepo.Get(u=>u.Id==id);
+            Category? obj = _unitOfWork.Category.Get(u=>u.Id==id);
             if (obj == null)
             {
                 return NotFound();
             }
-            _categoryRepo.Remove(obj);
-            _categoryRepo.Save();
+            _unitOfWork.Category.Remove(obj);
+            _unitOfWork.Save();
             return RedirectToAction("Index");
         }
     }
