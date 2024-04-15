@@ -3,8 +3,9 @@ using TeaTimeDemo.DataAcess.Data;
 using TeaTimeDemo.DataAcess.Repository.IRepository;
 using TeaTimeDemo.Models;
 
-namespace TeaTimeDemo.Controllers
+namespace TeaTimeDemo.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         //private readonly ICategoryRepository _categoryRepo;
@@ -23,7 +24,7 @@ namespace TeaTimeDemo.Controllers
         public IActionResult Index()
         {
             //List<Category> objCategoryList = _categoryRepo.GetAll().ToList();
-            List<Category> objCategoryList=_unitOfWork.Category.GetAll().ToList();
+            List<Category> objCategoryList = _unitOfWork.Category.GetAll().ToList();
 
             return View(objCategoryList);
         }
@@ -56,7 +57,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _unitOfWork.Category.Get(u=>u.Id==id);
+            Category? categortFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
             if (categortFromDb == null)
             {
@@ -84,7 +85,7 @@ namespace TeaTimeDemo.Controllers
             {
                 return NotFound();
             }
-            Category? categortFromDb = _unitOfWork.Category.Get(u=>u.Id==id);
+            Category? categortFromDb = _unitOfWork.Category.Get(u => u.Id == id);
 
             if (categortFromDb == null)
             {
@@ -100,7 +101,7 @@ namespace TeaTimeDemo.Controllers
         {
             //TODO: Confirm: 不知道為什麼物能直接傳物件進來，但是Edit就可以???
             //直接傳obj.Name、obj.DisplayOrder的資料會是空的
-            Category? obj = _unitOfWork.Category.Get(u=>u.Id==id);
+            Category? obj = _unitOfWork.Category.Get(u => u.Id == id);
             if (obj == null)
             {
                 return NotFound();
