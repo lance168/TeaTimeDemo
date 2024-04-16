@@ -25,7 +25,7 @@ namespace TeaTimeDemo.Models
         [ForeignKey("CategoryId")]
         [ValidateNever]
         public Category? Category {  get; set; }
-
+        [ValidateNever]
         public string? ImageUrl {  get; set; }
 
     }
