@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TeaTimeDemo.DataAcess.Data;
 
@@ -10,9 +11,11 @@ using TeaTimeDemo.DataAcess.Data;
 namespace TeaTimeDemo.DataAcess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240415094833_addProductsToDb")]
+    partial class addProductsToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace TeaTimeDemo.DataAcess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TeaTimeDemo.Models.Product", b =>
+            modelBuilder.Entity("TeaTimeDemo.Models.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,14 +73,7 @@ namespace TeaTimeDemo.DataAcess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -94,17 +90,13 @@ namespace TeaTimeDemo.DataAcess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
-
                     b.ToTable("Products");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            CategoryId = 1,
                             Description = "天然,好喝",
-                            ImageUrl = "",
                             Name = "台灣水果茶",
                             Price = 60.0,
                             Size = "大"
@@ -112,9 +104,7 @@ namespace TeaTimeDemo.DataAcess.Migrations
                         new
                         {
                             Id = 2,
-                            CategoryId = 1,
                             Description = "讚",
-                            ImageUrl = "",
                             Name = "鐵觀音",
                             Price = 35.0,
                             Size = "中"
@@ -122,24 +112,11 @@ namespace TeaTimeDemo.DataAcess.Migrations
                         new
                         {
                             Id = 3,
-                            CategoryId = 3,
                             Description = "棒透了",
-                            ImageUrl = "",
                             Name = "美式咖啡",
                             Price = 50.0,
                             Size = "中"
                         });
-                });
-
-            modelBuilder.Entity("TeaTimeDemo.Models.Product", b =>
-                {
-                    b.HasOne("TeaTimeDemo.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
                 });
 #pragma warning restore 612, 618
         }
