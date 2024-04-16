@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,9 +23,10 @@ namespace TeaTimeDemo.Models
         public int CategoryId {  get; set; }
 
         [ForeignKey("CategoryId")]
-        public Category Category {  get; set; }
+        [ValidateNever]
+        public Category? Category {  get; set; }
 
-        public string ImageUrl {  get; set; }
+        public string? ImageUrl {  get; set; }
 
     }
 }
