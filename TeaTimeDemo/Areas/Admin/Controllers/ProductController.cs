@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using TeaTimeDemo.DataAcess.Data;
 using TeaTimeDemo.DataAcess.Repository.IRepository;
 using TeaTimeDemo.Models;
@@ -25,6 +26,12 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
+            IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
+            ViewBag.CategoryList = CategoryList;
             return View();
         }
 
