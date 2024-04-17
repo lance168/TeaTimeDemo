@@ -73,34 +73,34 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Edit(int? id)
-        {
-            if (id == null || id == 0)
-            {
-                return NotFound();
-            }
-            Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
+        //public IActionResult Edit(int? id)
+        //{
+        //    if (id == null || id == 0)
+        //    {
+        //        return NotFound();
+        //    }
+        //    Product? productFromDb = _unitOfWork.Product.Get(u => u.Id == id);
 
-            if (productFromDb == null)
-            {
-                return NotFound();
-            }
+        //    if (productFromDb == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(productFromDb);
-        }
+        //    return View(productFromDb);
+        //}
 
-        [HttpPost]
-        public IActionResult Edit(Product obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Update(obj);
-                _unitOfWork.Save();
-                TempData["Success"] = "產品編輯成功!";
-                return RedirectToAction("Index");
-            }
-            return View();
-        }
+        //[HttpPost]
+        //public IActionResult Edit(Product obj)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Product.Update(obj);
+        //        _unitOfWork.Save();
+        //        TempData["Success"] = "產品編輯成功!";
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View();
+        //}
 
         public IActionResult Delete(int? id)
         {
@@ -132,6 +132,59 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
             _unitOfWork.Product.Remove(obj);
             _unitOfWork.Save();
             return RedirectToAction("Index");
+        }
+
+        public IActionResult Upsert(int? id)
+        {
+            ProductVM productVM = new()
+            {
+                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Product = new Product()
+            };
+
+            //新增
+            if (id == null || id == 0)
+            {
+                return View(productVM);
+            }
+            else //修改
+            {
+                productVM.Product = _unitOfWork.Product.Get(u => u.Id.Equals(id));
+                return View(productVM);
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Upsert(ProductVM productVM, IFormFile? file)
+        {
+            if (ModelState.IsValid)
+            {
+                if (productVM.Product.Id == 0)
+                {
+                    _unitOfWork.Product.Add(productVM.Product);
+                }
+                else
+                {
+                    _unitOfWork.Product.Update(productVM.Product);
+                }
+              
+                _unitOfWork.Save();
+                TempData["Success"] = "產品新增成功!";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                productVM.CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                });
+                return View(productVM);
+            }
         }
     }
 }
