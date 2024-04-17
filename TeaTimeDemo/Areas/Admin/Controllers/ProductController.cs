@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.IdentityModel.Tokens;
 using TeaTimeDemo.DataAcess.Data;
 using TeaTimeDemo.DataAcess.Repository.IRepository;
 using TeaTimeDemo.Models;
@@ -11,67 +12,68 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ProductController(IUnitOfWork unitOfWork)
+        public ProductController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
         {
             _unitOfWork = unitOfWork;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Index()
         {
             //List<Product> objProductList = _ProductRepo.GetAll().ToList();
-            List<Product> objProductList = _unitOfWork.Product.GetAll().ToList();
-
-            return View(objProductList);
+            List<Product> objCategoryList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return View(objCategoryList);
         }
 
-        public IActionResult Create()
-        {
-            //IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-            //{
-            //    Text = u.Name,
-            //    Value = u.Id.ToString()
-            //});
-            //ViewBag.CategoryList = CategoryList;
-            //ViewData["CategoryList"]= CategoryList;
-            ProductVM productVM = new()
-            {
-                CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-                {
-                    Text = u.Name,
-                    Value = u.Id.ToString()
-                }),
-                Product = new Product()
-            };
+        //public IActionResult Create()
+        //{
+        //    //IEnumerable<SelectListItem> CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+        //    //{
+        //    //    Text = u.Name,
+        //    //    Value = u.Id.ToString()
+        //    //});
+        //    //ViewBag.CategoryList = CategoryList;
+        //    //ViewData["CategoryList"]= CategoryList;
+        //    ProductVM productVM = new()
+        //    {
+        //        CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+        //        {
+        //            Text = u.Name,
+        //            Value = u.Id.ToString()
+        //        }),
+        //        Product = new Product()
+        //    };
 
-            return View(productVM);
-        }
+        //    return View(productVM);
+        //}
 
-        [HttpPost]
-        public IActionResult Create(ProductVM obj)
-        {
-            if (ModelState.IsValid)
-            {
-                _unitOfWork.Product.Add(obj.Product);
-                _unitOfWork.Save();
-                TempData["Success"] = "產品新增成功!";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                ProductVM productVM = new()
-                {
-                    CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
-                    {
-                        Text = u.Name,
-                        Value = u.Id.ToString()
-                    }),
-                    Product = new Product()
-                };
+        //[HttpPost]
+        //public IActionResult Create(ProductVM obj)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _unitOfWork.Product.Add(obj.Product);
+        //        _unitOfWork.Save();
+        //        TempData["Success"] = "產品新增成功!";
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        ProductVM productVM = new()
+        //        {
+        //            CategoryList = _unitOfWork.Category.GetAll().Select(u => new SelectListItem
+        //            {
+        //                Text = u.Name,
+        //                Value = u.Id.ToString()
+        //            }),
+        //            Product = new Product()
+        //        };
 
-                return View(productVM);
-            }
-        }
+        //        return View(productVM);
+        //    }
+        //}
 
         //public IActionResult Edit(int? id)
         //{
@@ -163,6 +165,29 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                string webRootPath = _webHostEnvironment.WebRootPath;
+                if (file != null)
+                {
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(webRootPath, @"images\product");
+
+                    //如果原本有檔案，就把檔案刪除，更新為新檔案
+                    if (!productVM.Product.ImageUrl.IsNullOrEmpty())
+                    {
+                        var oldImagePath = Path.Combine(webRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                    productVM.Product.ImageUrl = @"\images\product\" + fileName;
+                }
+
                 if (productVM.Product.Id == 0)
                 {
                     _unitOfWork.Product.Add(productVM.Product);
@@ -171,7 +196,7 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
                 {
                     _unitOfWork.Product.Update(productVM.Product);
                 }
-              
+
                 _unitOfWork.Save();
                 TempData["Success"] = "產品新增成功!";
                 return RedirectToAction("Index");

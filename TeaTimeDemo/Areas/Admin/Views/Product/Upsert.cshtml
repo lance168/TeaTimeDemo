@@ -2,6 +2,7 @@
 
 <form method="post" enctype="multipart/form-data">
     <input asp-for="Product.Id" hidden />
+    <input asp-for="Product.ImageUrl" hidden />
     <div class="row">
         <div class="col-10">
             <div class="border p-3 mt-4">
@@ -15,7 +16,7 @@
                     <span asp-validation-for="Product.Name" class="text-danger"></span>
                 </div>
                 <div class="mb-3 row p-1">
-                    <label asp-for="Product.CategoryId" class="p-0"></label>
+                    <label asp-for="Product.Category" class="p-0"></label>
                     <select asp-for="@Model.Product.CategoryId" asp-items="@Model.CategoryList" class="form-select">
                         <option disabled selected>選擇類別</option>
                     </select>
@@ -33,7 +34,7 @@
                 </div>
                 <div class="mb-3 row p-1">
                     <label asp-for="Product.ImageUrl" class="p-0"></label>
-                    <input type="file" name="file" asp-for="Product.ImageUrl" class="form-control" />
+                    <input type="file" name="file" accept=".jpg,.png" asp-for="Product.ImageUrl" class="form-control" />
                 </div>
                 <div class="mb-3 row p-1">
                     <label asp-for="Product.Description" class="p-0"></label>

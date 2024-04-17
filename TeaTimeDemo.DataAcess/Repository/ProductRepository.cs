@@ -24,7 +24,20 @@ namespace TeaTimeDemo.DataAcess.Repository
 
         public void Update(Product obj)
         {
-           _db.Products.Update(obj);
+            var objFromDb = _db.Products.FirstOrDefault(x => x.Id == obj.Id);
+            if (objFromDb != null)
+            {
+                objFromDb.Name= obj.Name;
+                objFromDb.Size = obj.Size;
+                objFromDb.Price = obj.Price;
+                objFromDb.Description = obj.Description;
+                objFromDb.CategoryId = obj.CategoryId;
+                if (objFromDb.ImageUrl != null)
+                {
+                    objFromDb.ImageUrl = obj.ImageUrl;
+                }
+            }
+           //_db.Products.Update(obj);
         }
     }
 }
