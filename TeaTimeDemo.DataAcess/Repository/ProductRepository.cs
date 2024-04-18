@@ -32,7 +32,7 @@ namespace TeaTimeDemo.DataAcess.Repository
                 objFromDb.Price = obj.Price;
                 objFromDb.Description = obj.Description;
                 objFromDb.CategoryId = obj.CategoryId;
-                if (objFromDb.ImageUrl != null)
+                if (obj.ImageUrl != null)
                 {
                     objFromDb.ImageUrl = obj.ImageUrl;
                 }
