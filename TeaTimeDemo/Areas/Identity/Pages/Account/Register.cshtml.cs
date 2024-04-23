@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using TeaTimeDemo.DataAcess.Repository.IRepository;
 using TeaTimeDemo.Models;
 using TeaTimeDemo.Utility;
 
@@ -36,6 +37,7 @@ namespace TeaTimeDemo.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IUnitOfWork _unitOfWork;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -45,7 +47,7 @@ namespace TeaTimeDemo.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
 
@@ -56,6 +58,7 @@ namespace TeaTimeDemo.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _unitOfWork = unitOfWork;
         }
 
         /// <summary>
@@ -120,6 +123,9 @@ namespace TeaTimeDemo.Areas.Identity.Pages.Account
             public string Name { get; set; }
             public string? Address { get; set; }
             public string? PhoneNumber { get; set; }
+            public string StoreId {  get; set; }
+            public IEnumerable<SelectListItem> StoreList { get; set; }
+
 
         }
 
@@ -136,7 +142,8 @@ namespace TeaTimeDemo.Areas.Identity.Pages.Account
 
             Input = new()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem { Text = i, Value = i })
+                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem { Text = i, Value = i }),
+                StoreList= _unitOfWork.Store.GetAll().Select(i=>new SelectListItem { Text = i.Name,Value = i.Id.ToString()})
             };
 
             ReturnUrl = returnUrl;

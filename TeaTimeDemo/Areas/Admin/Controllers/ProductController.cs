@@ -21,8 +21,8 @@ namespace TeaTimeDemo.Areas.Admin.Controllers
         }
         public IActionResult Index()
         {
-            List<Product> objCategoryList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
-            return View(objCategoryList);
+            List<Product> objProductList = _unitOfWork.Product.GetAll(includeProperties: "Category").ToList();
+            return View(objProductList);
         }
         public IActionResult Upsert(int? id)
         {
